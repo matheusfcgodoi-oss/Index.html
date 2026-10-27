@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio Era Vargas</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #101827, #263b59);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    padding: 25px;
+    background: #19263a;
+    border-radius: 20px;
+    box-shadow: 0 0 25px #0008;
+}
+
+h1 {
+    color: #f5c451;
+    text-align: center;
+}
+
+p {
+    line-height: 1.6;
+    color: #d0d8e5;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.iniciar {
+    background: #f5c451;
+    color: #101827;
+}
+
+.resposta {
+    background: #30435e;
+    color: white;
+    text-align: left;
+}
+
+.resposta:hover {
+    background: #456080;
+}
+
+.correta {
+    background: #168653 !important;
+}
+
+.errada {
+    background: #b83242 !important;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+#cronometro {
+    text-align: center;
+    font-size: 22px;
+    color: #f5c451;
+    font-weight: bold;
+}
+
+#feedback {
+    margin-top: 15px;
+    line-height: 1.5;
+}
+
+#video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.escondido {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <section id="telaInicial">
+        <h1>🇧🇷 DESAFIO ERA VARGAS</h1>
+
+        <p>
+            Teste seus conhecimentos sobre Getúlio Vargas!
+            São 15 perguntas e você tem 15 segundos para
+            responder cada uma.
+        </p>
+
+        <input id="nome" placeholder="Digite seu nome">
+
+        <button class="iniciar" onclick="iniciarJogo()">
+            COMEÇAR JOGO
+        </button>
+
+        <h3>📺 Vídeo sobre Getúlio Vargas</h3>
+
+        <p>
+            Assista a um vídeo para estudar antes de jogar.
+        </p>
+
+        <iframe
+            id="video"
+            src="https://www.youtube-nocookie.com/embed?listType=search&list=Era%20Vargas%20resumo%20Hist%C3%B3ria"
+            title="Vídeo sobre a Era Vargas"
+            allowfullscreen>
+        </iframe>
+
+        <p>
+            Se o vídeo não carregar,
+            <a
+              href="https://www.youtube.com/results?search_query=Era+Vargas+resumo"
+              target="_blank"
+              style="color:#f5c451">
+              clique aqui para assistir no YouTube.
+            </a>
+        </p>
+    </section>
+
+    <section id="telaJogo" class="escondido">
+
+        <h1>DESAFIO ERA VARGAS</h1>
+
+        <p id="saudacao"></p>
+
+        <p id="progresso"></p>
+
+        <p id="pontuacao">Pontos: 0</p>
+
+        <div id="cronometro">Tempo: 15 segundos</div>
+
+        <h3 id="pergunta"></h3>
+
+        <div id="alternativas"></div>
+
+        <p id="feedback"></p>
+
+        <button
+            id="proxima"
+            class="iniciar escondido"
+            onclick="proximaPergunta()">
+            PRÓXIMA PERGUNTA
+        </button>
+
+    </section>
+
+    <section id="telaFinal" class="escondido">
+
+        <h1>🏆 RESULTADO FINAL</h1>
+
+        <h2 id="resultado"></h2>
+
+        <p id="mensagemFinal"></p>
+
+        <button class="iniciar" onclick="location.reload()">
+            JOGAR NOVAMENTE
+        </button>
+
+        <h3>📺 Estude mais sobre a Era Vargas</h3>
+
+        <a
+          href="https://www.youtube.com/results?search_query=Era+Vargas+resumo"
+          target="_blank"
+          style="color:#f5c451">
+          Assistir vídeos sobre Getúlio Vargas
+        </a>
+
+    </section>
+
+</div>
+
+<script>
+const perguntas = [
+
+{
+pergunta: "Em que ano Getúlio Vargas chegou ao poder?",
+alternativas: ["1922", "1930", "1937", "1945"],
+correta: 1,
+explicacao: "Vargas chegou ao poder em 1930, após a Revolução de 1930."
+},
+
+{
+pergunta: "Como se chamou a primeira fase do governo Vargas?",
+alternativas: ["Governo Provisório", "Estado Novo", "República Nova", "Governo Militar"],
+correta: 0,
+explicacao: "O Governo Provisório durou de 1930 a 1934."
+},
+
+{
+pergunta: "Em que ano foi promulgada a Constituição do Governo Constitucional de Vargas?",
+alternativas: ["1930", "1934", "1937", "1945"],
+correta: 1,
+explicacao: "A Constituição foi promulgada em 1934."
+},
+
+{
+pergunta: "Como ficou conhecido o regime iniciado em 1937?",
+alternativas: ["República Velha", "Estado Novo", "Nova República", "República do Café"],
+correta: 1,
+explicacao: "O Estado Novo foi uma ditadura que durou de 1937 a 1945."
+},
+
+{
+pergunta: "O que significa CLT?",
+alternativas: [
+"Consolidação das Leis do Trabalho",
+"Conselho Legal Trabalhista",
+"Código Livre do Trabalho",
+"Constituição Legal do Trabalhador"
+],
+correta: 0,
+explicacao: "A CLT foi criada em 1943 para reunir a legislação trabalhista."
+},
+
+{
+pergunta: "Em que ano a CLT foi criada?",
+alternativas: ["1930", "1934", "1943", "1950"],
+correta: 2,
+explicacao: "A Consolidação das Leis do Trabalho foi criada em 1943."
+},
+
+{
+pergunta: "Qual órgão fazia propaganda do governo durante o Estado Novo?",
+alternativas: ["DIP", "IBGE", "SUS", "Petrobras"],
+correta: 0,
+explicacao: "O DIP controlava a propaganda oficial e a censura."
+},
+
+{
+pergunta: "Qual empresa estatal foi criada em 1953?",
+alternativas: ["Vale", "Petrobras", "Embraer", "Eletrobras"],
+correta: 1,
+explicacao: "A Petrobras foi criada em 1953, durante o segundo governo Vargas."
+},
+
+{
+pergunta: "Qual era o lema da campanha nacionalista pelo petróleo?",
+alternativas: [
+"O petróleo é nosso",
+"Brasil para sempre",
+"Trabalho e liberdade",
+"Ordem e trabalho"
+],
+correta: 0,
+explicacao: "O lema 'O petróleo é nosso' marcou a campanha nacionalista."
+},
+
+{
+pergunta: "Em que ano terminou o Estado Novo?",
+alternativas: ["1934", "1937", "1945", "1954"],
+correta: 2,
+explicacao: "O Estado Novo terminou em 1945, quando Vargas deixou o poder."
+},
+
+{
+pergunta: "Qual aliança política se opôs à continuidade do governo da Primeira República em 1930?",
+alternativas: [
+"Aliança Liberal",
+"Aliança Nacional",
+"Frente Popular",
+"Movimento Diretas Já"
+],
+correta: 0,
+explicacao: "A Aliança Liberal reuniu grupos contrários à situação política da época."
+},
+
+{
+pergunta: "Qual característica marcou o Estado Novo?",
+alternativas: [
+"Liberdade total de imprensa",
+"Censura e concentração de poder",
+"Fim do governo central",
+"Ausência de presidente"
+],
+correta: 1,
+explicacao: "O Estado Novo foi marcado pelo autoritarismo e pela censura."
+},
+
+{
+pergunta: "Como Vargas voltou à presidência em 1951?",
+alternativas: [
+"Por eleição popular",
+"Por herança familiar",
+"Por nomeação de um rei",
+"Por sorteio"
+],
+correta: 0,
+explicacao: "Vargas venceu a eleição presidencial de 1950 e assumiu em 1951."
+},
+
+{
+pergunta: "Em que ano Getúlio Vargas morreu?",
+alternativas: ["1945", "1950", "1954", "1964"],
+correta: 2,
+explicacao: "Getúlio Vargas morreu em 24 de agosto de 1954."
+},
+
+{
+pergunta: "Como terminou o segundo governo de Vargas?",
+alternativas: [
+"Com sua morte em 1954",
+"Com a Constituição de 1988",
+"Com a Proclamação da República",
+"Com sua coroação"
+],
+correta: 0,
+explicacao: "Vargas morreu em agosto de 1954, durante uma grave crise política."
+}
+
+];
+
+let indice = 0;
+let pontos = 0;
+let tempo = 15;
+let intervalo;
+let respondeu = false;
+let nomeJogador = "Jogador";
+
+function iniciarJogo() {
+    nomeJogador =
+        document.getElementById("nome").value.trim() || "Jogador";
+
+    document.getElementById("telaInicial")
+        .classList.add("escondido");
+
+    document.getElementById("telaJogo")
+        .classList.remove("escondido");
+
+    document.getElementById("saudacao").textContent =
+        "Boa sorte, " + nomeJogador + "!";
+
+    carregarPergunta();
+}
+
+function carregarPergunta() {
+    clearInterval(intervalo);
+
+    tempo = 15;
+    respondeu = false;
+
+    const p = perguntas[indice];
+
+    document.getElementById("progresso").textContent =
+        "Pergunta " + (indice + 1) + " de " + perguntas.length;
+
+    document.getElementById("pontuacao").textContent =
+        "Pontos: " + pontos;
+
+    document.getElementById("pergunta").textContent = p.pergunta;
+
+    document.getElementById("feedback").textContent = "";
+
+    document.getElementById("proxima")
+        .classList.add("escondido");
+
+    const area = document.getElementById("alternativas");
+    area.innerHTML = "";
+
+    p.alternativas.forEach(function(alternativa, i) {
+        const botao = document.createElement("button");
+
+        botao.className = "resposta";
+        botao.textContent =
+            String.fromCharCode(65 + i) + ") " + alternativa;
+
+        botao.onclick = function() {
+            verificarResposta(i, botao);
+        };
+
+        area.appendChild(botao);
+    });
+
+    atualizarCronometro();
+
+    intervalo = setInterval(function() {
+        tempo--;
+        atualizarCronometro();
+
+        if (tempo <= 0) {
+            clearInterval(intervalo);
+            verificarResposta(-1);
+        }
+    }, 1000);
+}
+
+function atualizarCronometro() {
+    document.getElementById("cronometro").textContent =
+        "Tempo: " + tempo + " segundos";
+}
+
+function verificarResposta(escolha) {
+    if (respondeu) return;
+
+    respondeu = true;
+    clearInterval(intervalo);
+
+    const p = perguntas[indice];
+    const botoes = document.querySelectorAll(".resposta");
+
+    botoes.forEach(function(botao) {
+        botao.disabled = true;
+    });
+
+    if (botoes[p.correta]) {
+        botoes[p.correta].classList.add("correta");
+    }
+
+    if (escolha === p.correta) {
+        pontos++;
+        document.getElementById("feedback").textContent =
+            "✅ Correto! " + p.explicacao;
+    } else if (escolha === -1) {
+        document.getElementById("feedback").textContent =
+            "⏰ Tempo esgotado! " + p.explicacao;
+    } else {
+        botoes[escolha].classList.add("errada");
+
+        document.getElementById("feedback").textContent =
+            "❌ Resposta incorreta. " + p.explicacao;
+    }
+
+    document.getElementById("pontuacao").textContent =
+        "Pontos: " + pontos;
+
+    const botaoProximo = document.getElementById("proxima");
+
+    botaoProximo.textContent =
+        indice === perguntas.length - 1
+        ? "VER RESULTADO"
+        : "PRÓXIMA PERGUNTA";
+
+    botaoProximo.classList.remove("escondido");
+}
+
+function proximaPergunta() {
+    if (!respondeu) return;
+
+    indice++;
+
+    if (indice < perguntas.length) {
+        carregarPergunta();
+    } else {
+        mostrarResultado();
+    }
+}
+
+function mostrarResultado() {
+    clearInterval(intervalo);
+
+    document.getElementById("telaJogo")
+        .classList.add("escondido");
+
+    document.getElementById("telaFinal")
+        .classList.remove("escondido");
+
+    document.getElementById("resultado").textContent =
+        nomeJogador + ": " + pontos + " de 15 pontos!";
+
+    let mensagem;
+
+    if (pontos >= 12) {
+        mensagem = "Excelente! Você conhece muito bem a Era Vargas!";
+    } else if (pontos >= 8) {
+        mensagem = "Muito bem! Você conhece boa parte do conteúdo.";
+    } else {
+        mensagem = "Continue estudando e tente novamente!";
+    }
+
+    document.getElementById("mensagemFinal").textContent = mensagem;
+}
+</script>
+
+</body>
+  </html>
