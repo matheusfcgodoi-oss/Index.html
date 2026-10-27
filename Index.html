@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio Era Vargas</title>
+
+<style>
+:root {
+  --bg: #101827;
+  --panel: #19263a;
+  --gold: #f5c451;
+  --text: #f4f7fb;
+  --green: #42d392;
+  --red: #ff6b75;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 18px;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #263b59, #101827);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 760px;
+  background: var(--panel);
+  border: 1px solid #34455e;
+  border-radius: 24px;
+  padding: 25px;
+  box-shadow: 0 20px 60px #0006;
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+h1 span {
+  color: var(--gold);
+}
+
+p {
+  color: #c4cede;
+  line-height: 1.6;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--gold);
+  color: #182235;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.primary {
+  width: 100%;
+  background: var(--gold);
+  color: #182235;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.primary:hover {
+  transform: scale(1.02);
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: 1px solid #52647c;
+  border-radius: 12px;
+  background: #101827;
+  color: white;
+}
+
+.stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.stat {
+  background: #101827;
+  padding: 12px;
+  border-radius: 10px;
+  color: #c4cede;
+}
+
+.stat strong {
+  color: white;
+}
+
+.timer-wrap {
+  height: 10px;
+  background: #0d1420;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+#timerbar {
+  height: 100%;
+  width: 100%;
+  background: var(--green);
+  transition: width 1s linear;
+}
+
+#question {
+  font-size: 23px;
+  line-height: 1.4;
+}
+
+.options {
+  display: grid;
+  gap: 10px;
+}
+
+.option {
+  width: 100%;
+  padding: 14px;
+  background: #263750;
+  color: white;
+  border: 1px solid #405574;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option.correct {
+  background: #15543f;
+  border-color: var(--green);
+  animation: popCorrect .4s ease, glowCorrect .8s ease;
+}
+
+.option.wrong {
+  background: #5b2732;
+  border-color: var(--red);
+  animation: shakeWrong .4s ease;
+}
+
+.feedback {
+  min-height: 30px;
+  margin: 15px 0;
+  line-height: 1.5;
+}
+
+.feedback-correct {
+  color: var(--green);
+  animation: popCorrect .45s ease, glowCorrect .8s ease;
+}
+
+.feedback-wrong {
+  color: var(--red);
+  animation: shakeWrong .45s ease;
+}
+
+@keyframes popCorrect {
+  0% {
+    transform: scale(.92);
+    opacity: .5;
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shakeWrong {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-7px);
+  }
+  40%, 80% {
+    transform: translateX(7px);
+  }
+}
+
+@keyframes glowCorrect {
+  0% {
+    box-shadow: 0 0 0 #42d39200;
+  }
+  50% {
+    box-shadow: 0 0 25px #42d39299;
+  }
+  100% {
+    box-shadow: 0 0 0 #42d39200;
+  }
+}
+
+.video-box {
+  background: #101827;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 15px;
+}
+
+iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 12px;
+}
+
+a {
+  color: var(--gold);
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #8493a8;
+  font-size: 13px;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  #question {
+    font-size: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+<section id="start">
+  <span class="badge">QUIZ DE HISTÓRIA</span>
+
+  <h1>DESAFIO<br><span>ERA VARGAS</span></h1>
+
+  <p>
+    Teste seus conhecimentos sobre Getúlio Vargas!
+    São 15 perguntas e você tem 15 segundos para
+    responder cada uma.
+  </p>
+
+  <label for="player">Digite seu nome:</label>
+
+  <input
+    id="player"
+    maxlength="30"
+    placeholder="Seu nome"
+  >
+
+  <button class="primary" id="startBtn">
+    ▶ COMEÇAR JOGO
+  </button>
+
+  <div class="video-box">
+    <h3>📺 Vídeo sobre Getúlio Vargas</h3>
+
+    <p>
+      Assista a um vídeo para estudar antes de jogar.
+    </p>
+
+    <iframe
+      src="https://www.youtube-nocookie.com/embed?listType=search&list=Era%20Vargas%20resumo%20Hist%C3%B3ria"
+      title="Vídeos sobre Era Vargas"
+      allowfullscreen>
+    </iframe>
+
+    <p>
+      Se o vídeo não carregar,
+      <a
+        href="https://www.youtube.com/results?search_query=Era+Vargas+resumo"
+        target="_blank"
+        rel="noopener">
+        clique aqui para assistir no YouTube.
+      </a>
+    </p>
+  </div>
+</section>
+
+<section id="game" class="hidden">
+
+  <span class="badge">ERA VARGAS</span>
+
+  <p id="playerLabel"></p>
+
+  <div class="stats">
+    <div class="stat">
+      Pergunta: <strong id="progress">1/15</strong>
+    </div>
+
+    <div class="stat">
+      Pontos: <strong id="score">0</strong>
+    </div>
+
+    <div class="stat">
+      Tempo: <strong id="time">15</strong>s
+    </div>
+  </div>
+
+  <div class="timer-wrap">
+    <div id="timerbar"></div>
+  </div>
+
+  <h2 id="question"></h2>
+
+  <div class="options" id="options"></div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <button class="primary hidden" id="nextBtn">
+    PRÓXIMA PERGUNTA →
+  </button>
+
+</section>
+
+<section id="end" class="hidden">
+
+  <span class="badge">DESAFIO CONCLUÍDO</span>
+
+  <h1 id="resultTitle">Resultado!</h1>
+
+  <p id="resultText"></p>
+
+  <button class="primary" id="restartBtn">
+    🔄 JOGAR NOVAMENTE
+  </button>
+
+  <div class="video-box">
+    <h3>📺 Estude mais sobre a Era Vargas</h3>
+
+    <a
+      href="https://www.youtube.com/results?search_query=Era+Vargas+resumo"
+      target="_blank"
+      rel="noopener">
+      Assistir vídeos sobre Getúlio Vargas
+    </a>
+  </div>
+
+</section>
+
+<footer>Quiz educativo • História do Brasil</footer>
+
+</main>
+
+<script>
+const questions = [
+
+{
+q: "Em que ano Getúlio Vargas chegou ao poder?",
+a: ["1922", "1930", "1937", "1945"],
+c: 1,
+e: "Vargas chegou ao poder em 1930, após a Revolução de 1930."
+},
+
+{
+q: "Como se chamou a primeira fase do governo Vargas?",
+a: ["Governo Provisório", "Estado Novo", "República Nova", "Governo Militar"],
+c: 0,
+e: "O Governo Provisório durou de 1930 a 1934."
+},
+
+{
+q: "Em que ano foi promulgada a Constituição do Governo Constitucional de Vargas?",
+a: ["1930", "1934", "1937", "1945"],
+c: 1,
+e: "A Constituição de 1934 marcou o início do Governo Constitucional."
+},
+
+{
+q: "Como ficou conhecido o regime iniciado em 1937?",
+a: ["República Velha", "Estado Novo", "Nova República", "República do Café"],
+c: 1,
+e: "O Estado Novo foi uma ditadura que durou de 1937 a 1945."
+},
+
+{
+q: "O que significa a sigla CLT?",
+a: [
+"Consolidação das Leis do Trabalho",
+"Conselho Legal Trabalhista",
+"Código Livre do Trabalho",
+"Constituição Legal do Trabalhador"
+],
+c: 0,
+e: "CLT significa Consolidação das Leis do Trabalho."
+},
+
+{
+q: "Em que ano a CLT foi criada?",
+a: ["1930", "1934", "1943", "1950"],
+c: 2,
+e: "A CLT foi criada em 1943."
+},
+
+{
+q: "Qual órgão fazia propaganda do governo durante o Estado Novo?",
+a: ["DIP", "IBGE", "SUS", "Petrobras"],
+c: 0,
+e: "O DIP controlava a propaganda oficial e a censura."
+},
+
+{
+q: "Qual empresa estatal foi criada em 1953?",
+a: ["Vale", "Petrobras", "Embraer", "Eletrobras"],
+c: 1,
+e: "A Petrobras foi criada em 1953, durante o segundo governo Vargas."
+},
+
+{
+q: "Qual era o lema da campanha pelo petróleo?",
+a: [
+"O petróleo é nosso",
+"Brasil para sempre",
+"Trabalho e liberdade",
+"Ordem e trabalho"
+],
+c: 0,
+e: "O lema 'O petróleo é nosso' marcou a campanha nacionalista."
+},
+
+{
+q: "Em que ano terminou o Estado Novo?",
+a: ["1934", "1937", "1945", "1954"],
+c: 2,
+e: "O Estado Novo terminou em 1945."
+},
+
+{
+q: "Qual aliança política se opôs à continuidade política da Primeira República em 1930?",
+a: [
+"Aliança Liberal",
+"Aliança Nacional",
+"Frente Popular",
+"Movimento Diretas Já"
+],
+c: 0,
+e: "A Aliança Liberal reuniu grupos contrários à situação política da época."
+},
+
+{
+q: "Qual característica marcou o Estado Novo?",
+a: [
+"Liberdade total de imprensa",
+"Censura e concentração de poder",
+"Fim do governo central",
+"Ausência de presidente"
+],
+c: 1,
+e: "O Estado Novo foi marcado pelo autoritarismo e pela censura."
+},
+
+{
+q: "Como Vargas voltou à presidência em 1951?",
+a: [
+"Por eleição popular",
+"Por herança familiar",
+"Por nomeação de um rei",
+"Por sorteio"
+],
+c: 0,
+e: "Vargas venceu a eleição presidencial de 1950 e assumiu em 1951."
+},
+
+{
+q: "Em que ano Getúlio Vargas morreu?",
+a: ["1945", "1950", "1954", "1964"],
+c: 2,
+e: "Getúlio Vargas morreu em 24 de agosto de 1954."
+},
+
+{
+q: "Como terminou o segundo governo de Vargas?",
+a: [
+"Com sua morte em 1954",
+"Com a Constituição de 1988",
+"Com a Proclamação da República",
+"Com sua coroação"
+],
+c: 0,
+e: "Vargas morreu em agosto de 1954, durante uma grave crise política."
+}
+
+];
+
+let index = 0;
+let score = 0;
+let seconds = 15;
+let timer = null;
+let locked = false;
+let playerName = "Jogador";
+let gameQuestions = [];
+
+const $ = id => document.getElementById(id);
+
+function show(section) {
+  ["start", "game", "end"].forEach(id => {
+    $(id).classList.toggle("hidden", id !== section);
+  });
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  return array;
+}
+
+function startGame() {
+  playerName = $("player").value.trim() || "Jogador";
+
+  index = 0;
+  score = 0;
+
+  // Embaralha perguntas e alternativas em cada partida.
+  gameQuestions = shuffleArray(
+    questions.map(item => {
+      const options = item.a.map((text, originalIndex) => ({
+        text,
+        correct: originalIndex === item.c
+      }));
+
+      shuffleArray(options);
+
+      return {
+        q: item.q,
+        a: options.map(option => option.text),
+        c: options.findIndex(option => option.correct),
+        e: item.e
+      };
+    })
+  );
+
+  $("playerLabel").textContent = "Olá, " + playerName + "!";
+
+  $("score").textContent = score;
+
+  show("game");
+
+  loadQuestion();
+}
+
+function loadQuestion() {
+  clearInterval(timer);
+
+  locked = false;
+  seconds = 15;
+
+  $("progress").textContent =
+    (index + 1) + "/15";
+
+  $("score").textContent = score;
+
+  $("time").textContent = seconds;
+
+  $("timerbar").style.width = "100%";
+  $("timerbar").style.background = "var(--green)";
+
+  $("question").textContent = gameQuestions[index].q;
+
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+
+  $("nextBtn").classList.add("hidden");
+
+  $("options").innerHTML = "";
+
+  gameQuestions[index].a.forEach((answer, i) => {
+    const button = document.createElement("button");
+
+    button.className = "option";
+
+    button.textContent =
+      String.fromCharCode(65 + i) + ") " + answer;
+
+    button.addEventListener("click", () => choose(i));
+
+    $("options").appendChild(button);
+  });
+
+  timer = setInterval(() => {
+    seconds--;
+
+    $("time").textContent = seconds;
+
+    $("timerbar").style.width =
+      (seconds / 15 * 100) + "%";
+
+    if (seconds <= 5) {
+      $("timerbar").style.background = "var(--red)";
+    }
+
+    if (seconds <= 0) {
+      clearInterval(timer);
+      choose(-1);
+    }
+  }, 1000);
+}
+
+function choose(choice) {
+  if (locked) return;
+
+  locked = true;
+
+  clearInterval(timer);
+
+  const item = gameQuestions[index];
+
+  const buttons = [
+    ...$("options").querySelectorAll("button")
+  ];
+
+  buttons.forEach((button, i) => {
+    button.disabled = true;
+
+    if (i === item.c) {
+      button.classList.add("correct");
+    }
+
+    if (i === choice && choice !== item.c) {
+      button.classList.add("wrong");
+    }
+  });
+
+  const feedback = $("feedback");
+
+  if (choice === item.c) {
+    score++;
+
+    feedback.textContent =
+      "✅ Correto! " + item.e;
+
+    feedback.classList.add("feedback-correct");
+
+  } else if (choice === -1) {
+
+    feedback.textContent =
+      "⏰ O tempo acabou! " + item.e;
+
+    feedback.classList.add("feedback-wrong");
+
+  } else {
+
+    feedback.textContent =
+      "❌ Incorreto! " + item.e;
+
+    feedback.classList.add("feedback-wrong");
+  }
+
+  $("score").textContent = score;
+
+  $("nextBtn").classList.remove("hidden");
+
+  $("nextBtn").textContent =
+    index === 14
+      ? "VER RESULTADO →"
+      : "PRÓXIMA PERGUNTA →";
+}
+
+function next() {
+  if (!locked) return;
+
+  if (index < 14) {
+    index++;
+    loadQuestion();
+  } else {
+    finish();
+  }
+}
+
+function finish() {
+  clearInterval(timer);
+
+  show("end");
+
+  const percent = Math.round(score / 15 * 100);
+
+  if (percent >= 80) {
+    $("resultTitle").textContent =
+      "🏆 Excelente, " + playerName + "!";
+  } else if (percent >= 50) {
+    $("resultTitle").textContent =
+      "👏 Bom trabalho, " + playerName + "!";
+  } else {
+    $("resultTitle").textContent =
+      "📚 Continue estudando, " + playerName + "!";
+  }
+
+  $("resultText").textContent =
+    "Você acertou " + score +
+    " de 15 perguntas (" + percent + "%). " +
+    (percent >= 80
+      ? "Você conhece muito bem a Era Vargas!"
+      : percent >= 50
+      ? "Você já sabe bastante, mas pode revisar alguns pontos."
+      : "Assista ao vídeo de revisão e tente novamente.");
+}
+
+$("startBtn").addEventListener("click", startGame);
+
+$("nextBtn").addEventListener("click", next);
+
+$("restartBtn").addEventListener("click", () => {
+  clearInterval(timer);
+  show("start");
+});
+
+</script>
+</body>
+</html>
